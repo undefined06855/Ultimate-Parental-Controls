@@ -8,14 +8,14 @@
     },
 
     "version": "v1.0.0",
-    "id": "undefined0.latex-test",
-    "name": "LaTeX Test",
+    "id": "undefined0.ultimate-parental-controls",
+    "name": "Ultimate Parental Controls",
     "developer": "undefined0",
-    "description": "",
-    "tags": [],
+    "description": "Thought parental controls were too easy? Think again!",
+    "tags": [ "joke" ],
 
     "links": {
-        "source": "https://github.com/undefined06855/example-mod"
+        "source": "https://github.com/undefined06855/Ultimate-Parental-Controls"
     },
 
     "resources": {
