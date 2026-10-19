@@ -22,7 +22,6 @@ add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 # mfl is great but the cmakelists.txt really wants it to be installed and whatever
 # so just going to compile it in with the rest of the mod lol
 CPMAddPackage(
-    NAME mfl
     GITHUB_REPOSITORY cpp-niel/mfl
     GIT_TAG 7ef9f07
     DOWNLOAD_ONLY YES

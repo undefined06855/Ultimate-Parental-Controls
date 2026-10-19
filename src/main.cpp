@@ -54,7 +54,7 @@ class $modify(MenuLayer) {
         box->setPosition({ 220.f, 40.f });
         this->addChild(box);
 
-        box = MathBox::create(R"(\int_{\frac{-2}{\pi}}^{\frac{5}{3\pi}}(123 \sqrt[3\pi]{\frac{\infty}{4\pi}} 123)dx)");
+        box = MathBox::create(R"(\int(123 \sqrt[3\pi]{\frac{\infty}{4\pi}} 123)dx)");
         box->setZOrder(20);
         box->setPosition(this->getContentSize() / 2.f);
         this->addChild(box);
@@ -63,5 +63,10 @@ class $modify(MenuLayer) {
         // box->setZOrder(20);
         // box->setPosition(this->getContentSize() / 2.f);
         // this->addChild(box);
+
+        box = MathBox::create(R"(x_{123}^{123})");
+        box->setZOrder(20);
+        box->setPosition({ 403.f, 285.f });
+        this->addChild(box);
     }
 };
