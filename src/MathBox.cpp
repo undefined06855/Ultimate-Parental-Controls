@@ -15,7 +15,11 @@ MathBox* MathBox::create(geode::ZStringView equation) {
 }
 
 bool MathBox::init(geode::ZStringView equation) {
+#ifdef _DEBUG
     if (!CCLayerColor::initWithColor({ 120, 120, 120, 255 })) return false;
+#else
+    if (!CCLayerColor::initWithColor({ 0, 0, 0, 80 })) return false;
+#endif
 
     this->ignoreAnchorPointForPosition(false);
 
@@ -62,11 +66,13 @@ void MathBox::addLine(mfl::line line) {
     sprite->setZOrder(5);
     this->addChild(sprite);
 
+#ifdef _DEBUG
     auto rect = cocos2d::CCLayerColor::create({ 0, 255, 255, 80 });
     rect->setContentSize({ this->toCocos(line.length), this->toCocos(line.thickness) });
     rect->setPosition({ this->toCocos(line.x), this->toCocos(line.y) });
     rect->setZOrder(10);
     this->addChild(rect);
+#endif
 }
 
 void MathBox::addGlyph(mfl::shaped_glyph glyph) {
@@ -88,9 +94,11 @@ void MathBox::addGlyph(mfl::shaped_glyph glyph) {
     node->setZOrder(5);
     this->addChild(node);
 
+#ifdef _DEBUG
     auto rect = cocos2d::CCLayerColor::create({ 255, 0, 255, 180 });
     rect->setContentSize({ 2.f, 2.f });
     rect->setPosition({ this->toCocos(glyph.x), this->toCocos(glyph.y) });
     rect->setZOrder(10);
     this->addChild(rect);
+#endif
 }
