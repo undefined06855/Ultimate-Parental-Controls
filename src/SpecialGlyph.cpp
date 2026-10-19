@@ -1,19 +1,25 @@
 #include "SpecialGlyph.hpp"
 
 static size_t s_firstSpecialGlyphID = 10000;
-static std::unordered_map<size_t, SpecialGlyphType> s_specialGlyphs;
+static std::vector<std::pair<SpecialGlyphType, int>> s_glyphIDs = {};
 
-size_t SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType charCode) {
-    size_t id = s_firstSpecialGlyphID;
-    while (s_specialGlyphs.contains(id)) id++;
+size_t SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType charCode, int variation) {
+    for (int i = 0; i < s_glyphIDs.size(); i++) {
+        if (s_glyphIDs[i].first == charCode && s_glyphIDs[i].second == variation) {
+            return s_firstSpecialGlyphID + i;
+        }
+    }
 
-    s_specialGlyphs[id] = charCode;
+    s_glyphIDs.push_back({ charCode, variation });
+    return s_firstSpecialGlyphID + (s_glyphIDs.size() - 1);
+}
 
-    return id;
+std::pair<SpecialGlyphType, int>& SpecialGlyph::lookupSpecialGlyphID(size_t id) {
+    return s_glyphIDs.at(id - s_firstSpecialGlyphID);
 }
 
 bool SpecialGlyph::isSpecialIDGlyph(size_t index) {
-    return index >= s_firstSpecialGlyphID && s_specialGlyphs.contains(index);
+    return index >= s_firstSpecialGlyphID;
 }
 
 SpecialGlyph* SpecialGlyph::create(mfl::shaped_glyph glyph) {
@@ -31,10 +37,11 @@ bool SpecialGlyph::init(mfl::shaped_glyph glyph) {
     if (!CCNode::init()) return false;
     if (!SpecialGlyph::isSpecialIDGlyph(glyph.index)) return false;
 
-    auto charCode = s_specialGlyphs[glyph.index];
+    auto& [type, variation] = SpecialGlyph::lookupSpecialGlyphID(glyph.index);
+    m_type = type;
 
     cocos2d::CCNode* child = nullptr;
-    switch (charCode) {
+    switch (type) {
         case SpecialGlyphType::Unknown: {
             auto wrapper = cocos2d::CCLayerColor::create({ 255, 0, 0, 120 });
             wrapper->setContentSize({ (float)glyph.size.value(), (float)glyph.size.value() });
@@ -51,7 +58,7 @@ bool SpecialGlyph::init(mfl::shaped_glyph glyph) {
 
         case SpecialGlyphType::Integral: {
             auto integral = geode::NineSlice::create("integral.png"_spr);
-            integral->setContentHeight(glyph.size.value());
+            integral->setContentHeight(/*glyph.size.value()*/ 50.f);
             child = integral;
             this->setAnchorPoint({ 0.f, .5f });
         } break;
@@ -62,6 +69,13 @@ bool SpecialGlyph::init(mfl::shaped_glyph glyph) {
             this->setAnchorPoint({ .25f, .1f });
         } break;
 
+        case SpecialGlyphType::Infinity: {
+            auto infinity = cocos2d::CCSprite::create("infinity.png"_spr);
+            infinity->setScale((glyph.size.value() - 12.f) / infinity->getContentHeight());
+            child = infinity;
+            this->setAnchorPoint({ 0.f, 0.f });
+        } break;
+
         case SpecialGlyphType::Pi: {
             auto pi = cocos2d::CCSprite::create("pi.png"_spr);
             pi->setScale(glyph.size.value() / pi->getContentHeight());
@@ -69,10 +83,14 @@ bool SpecialGlyph::init(mfl::shaped_glyph glyph) {
             this->setAnchorPoint({ 0.f, 0.f });
         } break;
 
-        case SpecialGlyphType::Infinity: {
-            auto infinity = cocos2d::CCSprite::create("infinity.png"_spr);
-            infinity->setScale((glyph.size.value() - 12.f) / infinity->getContentHeight());
-            child = infinity;
+        case SpecialGlyphType::Root: {
+            auto root = geode::NineSlice::create("root.png"_spr);
+            root->setInsetTop(10.f);
+            root->setInsetBottom(14.5f);
+            root->setInsetLeft(20.f);
+            root->setInsetRight(3.f);
+            root->setContentHeight(variation);
+            child = root;
             this->setAnchorPoint({ 0.f, 0.f });
         } break;
 
@@ -105,4 +123,32 @@ bool SpecialGlyph::init(mfl::shaped_glyph glyph) {
     }
 
     return true;
+}
+
+mfl::math_glyph_info SpecialGlyph::getGlyphInfo() {
+    switch (m_type) {
+        case SpecialGlyphType::Root: {
+            return {
+                .width = (int)this->getContentWidth() - 5,
+                .height = (int)this->getContentHeight(),
+                .depth = 20
+            };
+        }
+
+        case SpecialGlyphType::Integral: {
+            return {
+                .width = (int)this->getContentWidth(),
+                .height = (int)this->getContentHeight() - 30,
+                .depth = -10
+            };
+        }
+
+        default: {
+            return {
+                .width = (int)this->getContentWidth(),
+                .height = (int)this->getContentHeight(),
+                .depth = 0
+            };
+        }
+    }
 }

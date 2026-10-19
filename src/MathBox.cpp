@@ -15,7 +15,7 @@ MathBox* MathBox::create(geode::ZStringView equation) {
 }
 
 bool MathBox::init(geode::ZStringView equation) {
-    if (!CCLayerColor::initWithColor({ 0, 0, 0, 60 })) return false;
+    if (!CCLayerColor::initWithColor({ 120, 120, 120, 255 })) return false;
 
     this->ignoreAnchorPointForPosition(false);
 
@@ -59,8 +59,14 @@ void MathBox::addLine(mfl::line line) {
     sprite->setContentWidth(this->toCocos(line.length));
     sprite->setPosition({ this->toCocos(line.x), this->toCocos(line.y) });
     sprite->setAnchorPoint({ 0.f, .5f });
-
+    sprite->setZOrder(5);
     this->addChild(sprite);
+
+    auto rect = cocos2d::CCLayerColor::create({ 0, 255, 255, 80 });
+    rect->setContentSize({ this->toCocos(line.length), this->toCocos(line.thickness) });
+    rect->setPosition({ this->toCocos(line.x), this->toCocos(line.y) });
+    rect->setZOrder(10);
+    this->addChild(rect);
 }
 
 void MathBox::addGlyph(mfl::shaped_glyph glyph) {
@@ -70,15 +76,21 @@ void MathBox::addGlyph(mfl::shaped_glyph glyph) {
         node = SpecialGlyph::create(glyph);
     } else {
         node = geode::Label::create(std::string(1, glyph.index), "bigFont.fnt");
-        node->setScale((this->toCocos(glyph.size) - 2.f) / node->getContentHeight()); // small adjustment here
+        node->setScale(this->toCocos(glyph.size) / node->getContentHeight());
         node->setAnchorPoint({ 0.f, 0.f });
     }
-
 
     if (glyph.family == mfl::font_family::italic) {
         node->setSkewX(10.f);
     }
 
     node->setPosition({ this->toCocos(glyph.x), this->toCocos(glyph.y) });
+    node->setZOrder(5);
     this->addChild(node);
+
+    auto rect = cocos2d::CCLayerColor::create({ 255, 0, 255, 180 });
+    rect->setContentSize({ 2.f, 2.f });
+    rect->setPosition({ this->toCocos(glyph.x), this->toCocos(glyph.y) });
+    rect->setZOrder(10);
+    this->addChild(rect);
 }

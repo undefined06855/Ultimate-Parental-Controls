@@ -12,12 +12,66 @@ constexpr std::int32_t u(float value) {
 };
 
 mfl::math_constants BigFontMath::constants() const {
-    float lineThickness = 1.f;
-    float linePad = 0.f;
+    auto s = [this](float v) { return u(v * m_size); };
+
+    try {
+        auto json = geode::utils::file::readJson(geode::dirs::getGameDir() / "constants.json").unwrap();
+
+        return mfl::math_constants{
+            .axis_height = s(json["axis_height"].asDouble().unwrap()),
+            .fraction_rule_thickness = s(json["fraction_rule_thickness"].asDouble().unwrap()),
+            .subscript_drop = s(json["subscript_drop"].asDouble().unwrap()),
+            .subscript_shift_down = s(json["subscript_shift_down"].asDouble().unwrap()),
+            .superscript_drop = s(json["superscript_drop"].asDouble().unwrap()),
+            .superscript_shift_up = s(json["superscript_shift_up"].asDouble().unwrap()),
+            .superscript_shift_up_cramped = s(json["superscript_shift_up_cramped"].asDouble().unwrap()),
+            .minimum_dual_script_gap = s(json["minimum_dual_script_gap"].asDouble().unwrap()),
+            .maximum_superscript_bottom_in_dual_script = s(json["maximum_superscript_bottom_in_dual_script"].asDouble().unwrap()),
+            .space_after_script = s(json["space_after_script"].asDouble().unwrap()),
+            .radical_vertical_gap = s(json["radical_vertical_gap"].asDouble().unwrap()),
+            .radical_rule_thickness = s(json["radical_rule_thickness"].asDouble().unwrap()),
+            .radical_extra_ascender = s(json["radical_extra_ascender"].asDouble().unwrap()),
+            .radical_kern_before_degree = s(json["radical_kern_before_degree"].asDouble().unwrap()),
+            .radical_kern_after_degree = s(json["radical_kern_after_degree"].asDouble().unwrap()),
+            .radical_degree_bottom_raise_percent = (int)json["radical_degree_bottom_raise_percent"].asDouble().unwrap(),
+            .overline_gap = s(json["overline_gap"].asDouble().unwrap()),
+            .overline_padding = s(json["overline_padding"].asDouble().unwrap()),
+            .overline_thickness = s(json["overline_thickness"].asDouble().unwrap()),
+            .underline_gap = s(json["underline_gap"].asDouble().unwrap()),
+            .underline_padding = s(json["underline_padding"].asDouble().unwrap()),
+            .underline_thickness = s(json["underline_thickness"].asDouble().unwrap()),
+            .lower_limit_min_gap = s(json["lower_limit_min_gap"].asDouble().unwrap()),
+            .upper_limit_min_gap = s(json["upper_limit_min_gap"].asDouble().unwrap()),
+            .default_fraction = {
+                .numerator_shift_up = s(json["default_fraction"]["numerator_shift_up"].asDouble().unwrap()),
+                .denominator_shift_down = s(json["default_fraction"]["denominator_shift_down"].asDouble().unwrap()),
+                .numerator_min_gap = s(json["default_fraction"]["numerator_min_gap"].asDouble().unwrap()),
+                .denominator_min_gap = s(json["default_fraction"]["denominator_min_gap"].asDouble().unwrap())
+            },
+            .display_style_fraction = {
+                .numerator_shift_up = s(json["display_style_fraction"]["numerator_shift_up"].asDouble().unwrap()),
+                .denominator_shift_down = s(json["display_style_fraction"]["denominator_shift_down"].asDouble().unwrap()),
+                .numerator_min_gap = s(json["display_style_fraction"]["numerator_min_gap"].asDouble().unwrap()),
+                .denominator_min_gap = s(json["display_style_fraction"]["denominator_min_gap"].asDouble().unwrap())
+            },
+            .default_atop = {
+                .numerator_shift_up = s(json["default_atop"]["numerator_shift_up"].asDouble().unwrap()),
+                .denominator_shift_down = s(json["default_atop"]["denominator_shift_down"].asDouble().unwrap()),
+                .numerator_min_gap = s(json["default_atop"]["numerator_min_gap"].asDouble().unwrap()),
+                .denominator_min_gap = s(json["default_atop"]["denominator_min_gap"].asDouble().unwrap())
+            },
+            .display_style_atop = {
+                .numerator_shift_up = s(json["display_style_atop"]["numerator_shift_up"].asDouble().unwrap()),
+                .denominator_shift_down = s(json["display_style_atop"]["denominator_shift_down"].asDouble().unwrap()),
+                .numerator_min_gap = s(json["display_style_atop"]["numerator_min_gap"].asDouble().unwrap()),
+                .denominator_min_gap = s(json["display_style_atop"]["denominator_min_gap"].asDouble().unwrap())
+            }
+        };
+    } catch(...) {}
 
     return mfl::math_constants{
         .axis_height = u(12.5f),
-        .fraction_rule_thickness = u(lineThickness),
+        .fraction_rule_thickness = u(1.f),
         .subscript_drop = u(10),
         .subscript_shift_down = u(5),
         .superscript_drop = u(15),
@@ -26,18 +80,18 @@ mfl::math_constants BigFontMath::constants() const {
         .minimum_dual_script_gap = u(4),
         .maximum_superscript_bottom_in_dual_script = u(25),
         .space_after_script = u(6),
-        .radical_vertical_gap = u(linePad),
-        .radical_rule_thickness = u(lineThickness),
-        .radical_extra_ascender = u(5),
-        .radical_kern_before_degree = u(4),
-        .radical_kern_after_degree = u(-3),
-        .radical_degree_bottom_raise_percent = 60,
-        .overline_gap = u(linePad),
-        .overline_padding = u(linePad),
-        .overline_thickness = u(lineThickness),
-        .underline_gap = u(linePad),
-        .underline_padding = u(linePad),
-        .underline_thickness = u(lineThickness),
+        .radical_vertical_gap = u(0),
+        .radical_rule_thickness = u(0),
+        .radical_extra_ascender = u(0),
+        .radical_kern_before_degree = u(5),
+        .radical_kern_after_degree = u(-20),
+        .radical_degree_bottom_raise_percent = 30,
+        .overline_gap = u(0),
+        .overline_padding = u(0),
+        .overline_thickness = u(0),
+        .underline_gap = u(0),
+        .underline_padding = u(0),
+        .underline_thickness = u(0),
         .lower_limit_min_gap = u(0),
         .upper_limit_min_gap = u(0),
         .default_fraction = {
@@ -222,12 +276,15 @@ mfl::math_glyph_info BigFontMath::glyph_info(const size_t glyph_index) const {
         };
 
         auto glyph = SpecialGlyph::create(fakeShapedGlyph);
-        glyph->setScale(m_size);
-        return mfl::math_glyph_info{
-            .glyph_index = glyph_index,
-            .width = u(glyph->getContentWidth()),
-            .height = u(glyph->getContentHeight())
-        };
+        auto info = glyph->getGlyphInfo();
+        info.width = u(info.width);
+        info.height = u(info.height);
+        info.depth = u(info.depth);
+        info.accent_hpos = u(info.accent_hpos);
+        info.italic_correction = u(info.italic_correction);
+        info.glyph_index = glyph_index;
+
+        return info;
     }
 
     if (!bigFontShit.contains(glyph_index)) {
@@ -311,10 +368,12 @@ size_t BigFontMath::glyph_index_from_code_point(const mfl::code_point char_code,
         case 0x21D4: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Equivalent);
 
         case 0x221E: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Infinity);
+        case 0x1D70B: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Pi);
+
+        case 0x221A: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Root);
 
         case 0x2211: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Summation);
         case 0x222B: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Integral);
-        case 0x1D70B: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Pi);
     }
 
     return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Unknown);
@@ -325,7 +384,23 @@ std::vector<mfl::size_variant> BigFontMath::horizontal_size_variants(const mfl::
 }
 
 std::vector<mfl::size_variant> BigFontMath::vertical_size_variants(const mfl::code_point char_code) const {
-    return {};
+    std::vector<mfl::size_variant> ret;
+    ret.reserve(100);
+
+    for (int i = 0; i < 100; i++) {
+        switch (char_code) {
+            default: return {};
+
+            case 0x221A: {
+                ret.push_back({
+                    .glyph_index = SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Root, i),
+                    .size = u(i)
+                });
+            } break;
+        }
+    }
+
+    return ret;
 }
 
 std::optional<mfl::glyph_assembly> BigFontMath::horizontal_assembly(const mfl::code_point char_code) const {
