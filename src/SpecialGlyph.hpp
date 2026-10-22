@@ -9,6 +9,7 @@ enum class SpecialGlyphType {
     Summation,
     Integral,
     Pi,
+    Theta,
     Equivalent,
     Implies,
     ImpliedBy,

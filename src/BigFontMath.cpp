@@ -70,7 +70,7 @@ mfl::math_constants BigFontMath::constants() const {
     // } catch(...) {}
 
     return mfl::math_constants{
-        .axis_height = u(25.f),
+        .axis_height = u(12.f),
         .fraction_rule_thickness = u(1.f),
         .subscript_drop = u(13.f),
         .subscript_shift_down = u(5.f),
@@ -122,6 +122,7 @@ mfl::math_constants BigFontMath::constants() const {
 }
 
 mfl::math_glyph_info BigFontMath::glyph_info(const size_t glyph_index) const {
+    size_t glyph = glyph_index;
     // copied from bigFont.fnt
     static std::unordered_map<int, std::array<int, 7>> bigFontShit = {
         { 32, { 498, 128, 0, 0, 0, 33, 15 } },
@@ -226,35 +227,28 @@ mfl::math_glyph_info BigFontMath::glyph_info(const size_t glyph_index) const {
 
     if (SpecialGlyph::isSpecialIDGlyph(glyph_index)) {
         auto fakeShapedGlyph = mfl::shaped_glyph{
-            .index = glyph_index,
+            .index = glyph,
             .size = mfl::points(32)
         };
 
-        auto glyph = SpecialGlyph::create(fakeShapedGlyph);
-        auto info = glyph->getGlyphInfo();
+        auto info = SpecialGlyph::create(fakeShapedGlyph)->getGlyphInfo();
         info.width = u(info.width);
         info.height = u(info.height);
         info.depth = u(info.depth);
         info.accent_hpos = u(info.accent_hpos);
         info.italic_correction = u(info.italic_correction);
-        info.glyph_index = glyph_index;
+        info.glyph_index = glyph;
 
         return info;
     }
 
-    if (!bigFontShit.contains(glyph_index)) {
-        auto label = geode::Label::create("x", "bigFont.fnt");
-        label->setScale(m_size);
-        return mfl::math_glyph_info{
-            .glyph_index = glyph_index,
-            .width = u(label->getContentWidth()),
-            .height = u(label->getContentHeight())
-        };
+    if (!bigFontShit.contains(glyph)) {
+        glyph = (int)'x';
     }
 
-    auto& data = bigFontShit.at(glyph_index);
+    auto& data = bigFontShit.at(glyph);
     auto ret = mfl::math_glyph_info{
-        .glyph_index = glyph_index,
+        .glyph_index = glyph,
         .width = u(data[6]),
         .height = u(32.f - data[5]),
         .depth = -u(32.f - (data[5] + data[3])),
@@ -317,19 +311,23 @@ size_t BigFontMath::glyph_index_from_code_point(const mfl::code_point char_code,
     // everything else
     switch (char_code) {
         case 0x2212: return '-';
+        case 0x22C5: return L'•'; // bigFont supports bullet point
 
-        case 0x21D0: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::ImpliedBy);
-        case 0x21D2: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Implies);
+        case 0x2190: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::ImpliedBy);
+        case 0x2192: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Implies);
         case 0x21D4: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Equivalent);
 
         case 0x221E: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Infinity);
         case 0x1D70B: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Pi);
+        case 0x1D703: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Theta);
 
         case 0x221A: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Root);
 
         case 0x2211: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Summation);
         case 0x222B: return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Integral);
     }
+
+    geode::log::warn("Unknown glyph {} (u{:04X})", char_code, char_code);
 
     return SpecialGlyph::generateSpecialGlyphID(SpecialGlyphType::Unknown);
 }

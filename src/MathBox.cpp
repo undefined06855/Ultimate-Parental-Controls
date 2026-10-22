@@ -16,9 +16,9 @@ MathBox* MathBox::create(geode::ZStringView equation) {
 
 bool MathBox::init(geode::ZStringView equation) {
 #ifdef _DEBUG
-    if (!CCLayerColor::initWithColor({ 120, 120, 120, 255 })) return false;
+    if (!CCLayerColor::initWithColor({ 0, 0, 0, 20 })) return false;
 #else
-    if (!CCLayerColor::initWithColor({ 0, 0, 0, 80 })) return false;
+    if (!CCLayerColor::initWithColor({ 0, 0, 0, 0 })) return false;
 #endif
 
     this->ignoreAnchorPointForPosition(false);
@@ -42,6 +42,10 @@ bool MathBox::init(geode::ZStringView equation) {
 
     for (auto glyph : layout.glyphs) {
         this->addGlyph(glyph);
+    }
+
+    for (auto child : this->getChildrenExt()) {
+        child->setPositionY(child->getPositionY() + 13.f);
     }
 
     return true;
@@ -81,7 +85,7 @@ void MathBox::addGlyph(mfl::shaped_glyph glyph) {
     if (SpecialGlyph::isSpecialIDGlyph(glyph.index)) {
         node = SpecialGlyph::create(glyph);
     } else {
-        node = geode::Label::create(std::string(1, glyph.index), "bigFont.fnt");
+        node = geode::Label::create(geode::utils::string::wideToUtf8(std::wstring(1, glyph.index)), "bigFont.fnt");
         node->setScale(this->toCocos(glyph.size) / node->getContentHeight());
         node->setAnchorPoint({ 0.f, 0.f });
     }

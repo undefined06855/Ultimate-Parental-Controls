@@ -60,7 +60,7 @@ bool SpecialGlyph::init(mfl::shaped_glyph glyph) {
             auto integral = geode::NineSlice::create("integral.png"_spr);
             integral->setContentHeight(/*glyph.size.value()*/ 50.f);
             child = integral;
-            this->setAnchorPoint({ 0.f, .5f });
+            this->setAnchorPoint({ 0.f, .2f });
         } break;
 
         case SpecialGlyphType::Summation: {
@@ -80,6 +80,13 @@ bool SpecialGlyph::init(mfl::shaped_glyph glyph) {
             auto pi = cocos2d::CCSprite::create("pi.png"_spr);
             pi->setScale(glyph.size.value() / pi->getContentHeight());
             child = pi;
+            this->setAnchorPoint({ 0.f, 0.f });
+        } break;
+
+        case SpecialGlyphType::Theta: {
+            auto theta = cocos2d::CCSprite::create("theta.png"_spr);
+            theta->setScale(glyph.size.value() / theta->getContentHeight());
+            child = theta;
             this->setAnchorPoint({ 0.f, 0.f });
         } break;
 
