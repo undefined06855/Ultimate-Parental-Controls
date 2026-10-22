@@ -142,6 +142,14 @@ mfl::math_glyph_info SpecialGlyph::getGlyphInfo() {
             };
         }
 
+        case SpecialGlyphType::Pi: {
+            return {
+                .width = (int)this->getContentWidth(),
+                .height = (int)this->getContentHeight() - 5,
+                .depth = -30
+            };
+        }
+
         case SpecialGlyphType::Integral: {
             return {
                 .width = (int)this->getContentWidth(),
