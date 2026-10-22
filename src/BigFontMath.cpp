@@ -70,35 +70,39 @@ mfl::math_constants BigFontMath::constants() const {
     // } catch(...) {}
 
     return mfl::math_constants{
-        .axis_height = u(12.f),
+        .axis_height = u(13.f),
         .fraction_rule_thickness = u(1.f),
         .subscript_drop = u(13.f),
         .subscript_shift_down = u(5.f),
         .superscript_drop = u(10.f),
-        .superscript_shift_up = u(13.f),
+        .superscript_shift_up = u(14.f),
         .superscript_shift_up_cramped = u(10.f),
         .minimum_dual_script_gap = u(0.f),
         .maximum_superscript_bottom_in_dual_script = u(0.f),
         .space_after_script = u(2.f),
-        .radical_vertical_gap = u(5.f),
+
+        .radical_vertical_gap = u(10.f),
         .radical_rule_thickness = u(3.f),
-        .radical_extra_ascender = u(0.f),
-        .radical_kern_before_degree = u(8.f),
+        .radical_extra_ascender = u(4.f),
+        .radical_kern_before_degree = u(17.f),
         .radical_kern_after_degree = u(-20.f),
         .radical_degree_bottom_raise_percent = 70,
+
         .overline_gap = u(3.f),
         .overline_padding = u(1.f),
         .overline_thickness = u(1.f),
         .underline_gap = u(3.f),
         .underline_padding = u(1.f),
         .underline_thickness = u(1.f),
-        .lower_limit_min_gap = u(-2.f),
+
+        .lower_limit_min_gap = u(3.f),
         .upper_limit_min_gap = u(-5.f),
+
         .default_fraction = {
             .numerator_shift_up = u(0.f),
             .denominator_shift_down = u(0.f),
             .numerator_min_gap = u(0.f),
-            .denominator_min_gap = u(1.5f)
+            .denominator_min_gap = u(0.f)
         },
         .display_style_fraction = {
             .numerator_shift_up = u(0.f),
@@ -110,13 +114,13 @@ mfl::math_constants BigFontMath::constants() const {
             .numerator_shift_up = u(0.f),
             .denominator_shift_down = u(0.f),
             .numerator_min_gap = u(0.f),
-            .denominator_min_gap = u(1.5f)
+            .denominator_min_gap = u(0.f)
         },
         .display_style_atop = {
             .numerator_shift_up = u(0.f),
             .denominator_shift_down = u(0.f),
             .numerator_min_gap = u(0.f),
-            .denominator_min_gap = u(1.5f)
+            .denominator_min_gap = u(0.f)
         }
     };
 }
